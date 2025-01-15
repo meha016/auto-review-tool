@@ -1,6 +1,8 @@
 import httpx
 from fastapi import HTTPException
 
+from utils.error_handling import handle_github_error
+
 GITHUB_API_BASE_URL = "https://api.github.com"
 
 
@@ -29,10 +31,8 @@ async def fetch_repository_contents(repo_url: str, token: str) -> list:
             url = f"{GITHUB_API_BASE_URL}/repos/{owner}/{repo}/contents/{path}"
             response = await client.get(url, headers=headers)
 
-            if response.status_code == 404:
-                raise HTTPException(status_code=404, detail="Repository not found.")
-            elif response.status_code != 200:
-                raise HTTPException(status_code=response.status_code, detail="Failed to fetch repository contents.")
+            if response.status_code != 200:
+                handle_github_error(response)
 
             items = response.json()
             all_files = []
