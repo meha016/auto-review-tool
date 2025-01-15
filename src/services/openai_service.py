@@ -46,6 +46,7 @@ async def analyze_code(repo_contents: list, assignment_description: str, candida
 
     message_content = response.choices[0].message.content
 
+
     try:
         result = json.loads(message_content)
     except json.JSONDecodeError:
